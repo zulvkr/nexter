@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:graphql": "graphql-codegen -w",
-    "dev:linux": "npm run dev:graphql & npm run dev",
+    "dev:linux": "npm run dev & npm run dev:graphql & wait",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

@@ -3,5 +3,8 @@
     "next/core-web-vitals",
     "plugin:@tanstack/eslint-plugin-query/recommended"
   ],
-  "plugins": ["@tanstack/eslint-plugin-query"]
+  "plugins": ["@tanstack/eslint-plugin-query"],
+  "rules": {
+    "@next/next/no-img-element": "off"
+  }
 }
