@@ -2,7 +2,7 @@ import { AllPokemonQueryQuery } from '@/gql/graphql'
 
 type pokemonType = AllPokemonQueryQuery['getAllPokemon'][0]
 
-function PokedexCardXs({ pokemon }: { pokemon: pokemonType }) {
+function PokedexCard({ pokemon }: { pokemon: pokemonType }) {
   return (
     <div className='flex flex-row items-center justify-between w-full px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm'>
       <div className='flex flex-row items-center'>
@@ -26,4 +26,16 @@ function PokedexCardXs({ pokemon }: { pokemon: pokemonType }) {
   )
 }
 
-export default PokedexCardXs
+interface PokedexCardListProps {
+  allPokemon: AllPokemonQueryQuery['getAllPokemon']
+}
+
+export default function PokedexCardList({ allPokemon }: PokedexCardListProps) {
+  return (
+    <div className='grid grid-cols-1 gap-4 px-4'>
+      {allPokemon.map(pokemon => (
+        <PokedexCard key={pokemon.key} pokemon={pokemon} />
+      ))}
+    </div>
+  )
+}

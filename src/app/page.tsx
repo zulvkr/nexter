@@ -1,10 +1,13 @@
 'use client'
 
 import { graphql } from '@/gql'
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import client from '@/lib/graphqlRequest'
-import PokedexCardXs from './PokedexCardXs'
 import { processPokemon } from '@/lib/pokemonProcessor'
+import PokedexTable from '@/components/PokedexTable'
+import PokedexCardList from '@/components/PokedexCardList'
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
+import { useEffect } from 'react'
 
 const allPokemon = graphql(/* GraphQL */ `
   query allPokemonQuery($offset: Int, $take: Int) {
@@ -54,30 +57,81 @@ const allPokemon = graphql(/* GraphQL */ `
 `)
 
 export default function PokedexPage() {
-  const { data } = useQuery({
-    queryKey: ['allPokemon'],
-    // All pokemon without missingno
-    queryFn: async () =>
-      await client.request(allPokemon, {
-        offset: 89,
-        take: 1392
+  // All pokemon without missingno: 89 - 1392
+  const take = 200
+  const initialOffset = 89
+  const minOffset = 89
+  const maxLength = 1392
+
+  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: [
+      { query: 'allPokemon', initialOffset, take, maxLength, minOffset }
+    ],
+    queryFn: async ({ pageParam }) => {
+      const offset: number = pageParam?.offset ?? 0
+      let reducedTake: number | undefined
+
+      if (offset + take > maxLength) {
+        reducedTake = maxLength - offset
+      }
+
+      const res = await client.request(allPokemon, {
+        offset: offset || initialOffset,
+        take: reducedTake ?? take
       })
+
+      return {
+        res,
+        offset
+      }
+    },
+    getNextPageParam: lastPage => {
+      if (lastPage?.offset > maxLength) {
+        return undefined
+      }
+
+      const offset = lastPage.offset + take
+      return { offset }
+    }
   })
+
+  const allData = data?.pages.flatMap(x => x?.res.getAllPokemon)
+
+  const allPokemonData = allData ? processPokemon(allData) : undefined
+
+  const isAllDataLoaded = allData?.length === maxLength
+
   return (
     <div>
-      <div className='h-[300px]'>
-        ABC
-      </div>
-      <div>
-
-      {data && (
-        <div>
-          {processPokemon(data.getAllPokemon).map((pokemon, index) => (
-            <PokedexCardXs key={index} pokemon={pokemon} />
-          ))}
-        </div>
+      {allPokemonData && (
+        <>
+          <div className='sm:hidden'>
+            <PokedexCardList allPokemon={allPokemonData} />
+          </div>
+          <div className='hidden sm:block'>
+            <PokedexTable allPokemon={allPokemonData} />
+          </div>
+          {!isFetchingNextPage && !isAllDataLoaded && (
+            <IntersectHelper callback={fetchNextPage} />
+          )}
+        </>
       )}
-      </div>
     </div>
   )
+}
+
+function IntersectHelper({ callback }: { callback: () => void }) {
+  const [ref, entry] = useIntersectionObserver({
+    rootMargin: '4000px 0px 4000px 0px'
+  })
+
+  const isIntersecting = entry?.isIntersecting
+
+  useEffect(() => {
+    if (isIntersecting) {
+      callback()
+    }
+  }, [isIntersecting, callback])
+
+  return <div ref={ref} />
 }
