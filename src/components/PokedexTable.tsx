@@ -20,17 +20,17 @@ export default function PokedexTable({ allPokemon }: PokedexTableProps) {
       <TableCaption>List of All Pokemon.</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className=''>Number</TableHead>
-          <TableHead>Image</TableHead>
-          <TableHead>Name</TableHead>
-          <TableHead>Type</TableHead>
+          <TableHead title='Number'></TableHead>
+          <TableHead title='Image'></TableHead>
+          <TableHead title='Name'></TableHead>
+          <TableHead title='Type'></TableHead>
           <TableHead className='text-right'>Total</TableHead>
           <TableHead className='text-right'>HP</TableHead>
-          <TableHead className='text-right'>Attack</TableHead>
-          <TableHead className='text-right'>Defense</TableHead>
-          <TableHead className='text-right'>Sp. Att</TableHead>
-          <TableHead className='text-right'>Sp. Def</TableHead>
-          <TableHead className='text-right'>Speed</TableHead>
+          <TableHead className='text-right'>Att</TableHead>
+          <TableHead className='text-right'>Def</TableHead>
+          <TableHead className='text-right'>Sp.Att</TableHead>
+          <TableHead className='text-right'>Sp.Def</TableHead>
+          <TableHead className='text-right'>Spd</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

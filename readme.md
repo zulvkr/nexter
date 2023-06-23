@@ -10,6 +10,10 @@ Deployed on node.js server in http://nodejs.f8fbipzggp6ji6q3.protbk.com/ to fit 
 
 Also deployed on vercel https://nexter-nine-kappa.vercel.app/
 
+## Stack
+
+The stack picked is loosely based on https://ui.shadcn.com/ . Some UI components are adapted from it.
+
 ## Development
 
 1. Clone the repository

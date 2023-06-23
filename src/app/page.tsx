@@ -118,8 +118,6 @@ export default function PokedexPage() {
     })
   })
 
-  // const isAllDataLoaded = allData?.length === maxLength
-
   return (
     <div>
       {filteredPokemonData && (
@@ -143,16 +141,18 @@ export default function PokedexPage() {
             </div>
           </div>
           <div className='hidden sm:block'>
-            <div>
+            <div className='px-8 fixed bg-white w-full border-b'>
               <PokedexFilterBar
                 activeTypeFilter={pokemonTypesFilter}
                 setActiveTypeFilter={setPokemonTypesFilter}
               />
             </div>
-            <PokedexTable allPokemon={filteredPokemonData} />
-            {!isFetchingNextPage && hasNextPage && (
-            <IntersectHelper callback={fetchNextPage} />
-          )}
+            <div className='px-8 pt-[96px]'>
+              <PokedexTable allPokemon={filteredPokemonData} />
+              {!isFetchingNextPage && hasNextPage && (
+                <IntersectHelper callback={fetchNextPage} />
+              )}
+            </div>
           </div>
         </>
       )}
