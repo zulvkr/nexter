@@ -22,6 +22,7 @@ export default function PokedexTable({ allPokemon }: PokedexTableProps) {
           <TableHead className=''>Number</TableHead>
           <TableHead>Image</TableHead>
           <TableHead>Name</TableHead>
+          <TableHead>Type</TableHead>
           <TableHead className='text-right'>Total Base Stats</TableHead>
           <TableHead className='text-right'>HP</TableHead>
           <TableHead className='text-right'>Attack</TableHead>
@@ -44,14 +45,40 @@ export default function PokedexTable({ allPokemon }: PokedexTableProps) {
                 />
               </div>
             </TableCell>
-            <TableCell className='font-medium text-gray-900 capitalize'>{pokemon.species.replace(/-/g, ' ')}</TableCell>
-            <TableCell className='text-right'>{pokemon.baseStatsTotal}</TableCell>
+            <TableCell className='font-medium text-gray-900 capitalize'>
+              {pokemon.species.replace(/-/g, ' ')}
+            </TableCell>
+            <TableCell>
+              <div className='flex gap-1 mt-1'>
+                {pokemon.types.map(type => (
+                  <div
+                    key={type.name}
+                    className='text-xs text-gray-500 capitalize w-15 border px-2 py-1 rounded'
+                  >
+                    {type.name}
+                  </div>
+                ))}
+              </div>
+            </TableCell>
+            <TableCell className='text-right'>
+              {pokemon.baseStatsTotal}
+            </TableCell>
             <TableCell className='text-right'>{pokemon.baseStats.hp}</TableCell>
-            <TableCell className='text-right'>{pokemon.baseStats.attack}</TableCell>
-            <TableCell className='text-right'>{pokemon.baseStats.defense}</TableCell>
-            <TableCell className='text-right'>{pokemon.baseStats.specialattack}</TableCell>
-            <TableCell className='text-right'>{pokemon.baseStats.specialdefense}</TableCell>
-            <TableCell className='text-right'>{pokemon.baseStats.speed}</TableCell>
+            <TableCell className='text-right'>
+              {pokemon.baseStats.attack}
+            </TableCell>
+            <TableCell className='text-right'>
+              {pokemon.baseStats.defense}
+            </TableCell>
+            <TableCell className='text-right'>
+              {pokemon.baseStats.specialattack}
+            </TableCell>
+            <TableCell className='text-right'>
+              {pokemon.baseStats.specialdefense}
+            </TableCell>
+            <TableCell className='text-right'>
+              {pokemon.baseStats.speed}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
