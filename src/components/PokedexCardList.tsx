@@ -1,4 +1,7 @@
 import { AllPokemonQueryQuery } from '@/gql/graphql'
+import { UseInfiniteQueryResult } from '@tanstack/react-query'
+import { useVirtualizer } from '@tanstack/react-virtual'
+import { useEffect, useRef } from 'react'
 
 type pokemonType = AllPokemonQueryQuery['getAllPokemon'][0]
 
@@ -34,7 +37,7 @@ function PokedexCard({ pokemon }: { pokemon: pokemonType }) {
         </div>
 
         <div className='flex-auto grid grid-cols-[minmax(90px,1fr),minmax(50px,1fr)] text-sm text-gray-600 divide-y border-gray-50 [&>div]:py-1 mt-4'>
-          <div>Total</div>
+          <div>Base Stats Total</div>
           <div className='text-right border-none'>{pokemon.baseStatsTotal}</div>
           <div>HP</div>
           <div className='text-right'>{pokemon.baseStats.hp}</div>
@@ -56,14 +59,82 @@ function PokedexCard({ pokemon }: { pokemon: pokemonType }) {
 
 interface PokedexCardListProps {
   allPokemon: AllPokemonQueryQuery['getAllPokemon']
+  infiniteQueryResult: UseInfiniteQueryResult
 }
 
-export default function PokedexCardList({ allPokemon }: PokedexCardListProps) {
+export default function PokedexCardList({
+  allPokemon,
+  infiniteQueryResult
+}: PokedexCardListProps) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  const { fetchNextPage, hasNextPage, isFetchingNextPage, data } =
+    infiniteQueryResult
+
+  const rowVirtualizer = useVirtualizer({
+    count: hasNextPage ? allPokemon.length + 1 : allPokemon.length,
+    getScrollElement: () => ref.current,
+    estimateSize: () => 322,
+    overscan: 5
+  })
+
+  const virtualItems = rowVirtualizer.getVirtualItems()
+
+  useEffect(() => {
+    const [lastItem] = [...virtualItems].reverse()
+
+    if (!lastItem) {
+      return
+    }
+
+    if (
+      lastItem.index >= allPokemon.length - 1 &&
+      hasNextPage &&
+      !isFetchingNextPage
+    ) {
+      fetchNextPage()
+    }
+  }, [
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    virtualItems,
+    allPokemon.length,
+    rowVirtualizer
+  ])
+
   return (
-    <div className='grid grid-cols-1 gap-4 px-4'>
-      {allPokemon.map(pokemon => (
-        <PokedexCard key={pokemon.key} pokemon={pokemon} />
-      ))}
+    <div ref={ref} className='h-[calc(100svh_-_100px)] overflow-auto px-4'>
+      <div
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          width: '100%',
+          position: 'relative'
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map(virtualItem => {
+          const isLastRow = virtualItem.index === allPokemon.length - 1
+          const pokemon = allPokemon[virtualItem.index]
+
+          return (
+            <div
+              key={virtualItem.key}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: `${virtualItem.size}px`,
+                transform: `translateY(${virtualItem.start}px)`
+              }}
+            >
+              {isLastRow && hasNextPage
+                ? 'Loading more...'
+                : pokemon && <PokedexCard pokemon={pokemon} />}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

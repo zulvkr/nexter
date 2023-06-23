@@ -63,57 +63,65 @@ export default function PokedexPage() {
   const minOffset = 89
   const maxLength = 1392
 
-  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
+  const queryResult = useInfiniteQuery({
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
     queryKey: [
       { query: 'allPokemon', initialOffset, take, maxLength, minOffset }
     ],
     queryFn: async ({ pageParam }) => {
-      const offset: number = pageParam?.offset ?? 0
-      let reducedTake: number | undefined
-
-      if (offset + take > maxLength) {
-        reducedTake = maxLength - offset
-      }
+      const offset: number = pageParam?.nextOffset ?? initialOffset
+      const lastPage: boolean = pageParam?.lastPage ?? false
 
       const res = await client.request(allPokemon, {
-        offset: offset || initialOffset,
-        take: reducedTake ?? take
+        offset: offset,
+        take: lastPage ? maxLength - offset : take
       })
 
       return {
         res,
         offset
-      }
+      } 
     },
     getNextPageParam: lastPage => {
-      if (lastPage?.offset > maxLength) {
-        return undefined
+      const nextOffset = lastPage.offset + take
+
+      if (nextOffset + take < maxLength) {
+        return { nextOffset }
       }
 
-      const offset = lastPage.offset + take
-      return { offset }
+      if (nextOffset < maxLength) {
+        return { nextOffset, lastPage: true }
+      }
+
+      return undefined
     }
   })
+
+  const { data } = queryResult
 
   const allData = data?.pages.flatMap(x => x?.res.getAllPokemon)
 
   const allPokemonData = allData ? processPokemon(allData) : undefined
 
-  const isAllDataLoaded = allData?.length === maxLength
+  // const isAllDataLoaded = allData?.length === maxLength
 
   return (
     <div>
       {allPokemonData && (
         <>
           <div className='sm:hidden'>
-            <PokedexCardList allPokemon={allPokemonData} />
+            <PokedexCardList
+              allPokemon={allPokemonData}
+              infiniteQueryResult={queryResult}
+            />
           </div>
           <div className='hidden sm:block'>
             <PokedexTable allPokemon={allPokemonData} />
-          </div>
-          {!isFetchingNextPage && !isAllDataLoaded && (
+            {/* {!isFetchingNextPage && !isAllDataLoaded && (
             <IntersectHelper callback={fetchNextPage} />
-          )}
+          )} */}
+          </div>
         </>
       )}
     </div>
