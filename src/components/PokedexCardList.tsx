@@ -104,7 +104,7 @@ export default function PokedexCardList({
   ])
 
   return (
-    <div ref={ref} className='h-[calc(100svh_-_100px)] overflow-auto px-4'>
+    <div ref={ref} className='h-[calc(100svh)] overflow-auto px-4 py-4'>
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,

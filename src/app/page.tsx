@@ -7,7 +7,9 @@ import { processPokemon } from '@/lib/pokemonProcessor'
 import PokedexTable from '@/components/PokedexTable'
 import PokedexCardList from '@/components/PokedexCardList'
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { HiOutlineAdjustments } from 'react-icons/hi'
+import PokedexFilterBottomSheet from '@/components/PokedexFilterBottomSheet'
 
 const allPokemon = graphql(/* GraphQL */ `
   query allPokemonQuery($offset: Int, $take: Int) {
@@ -81,7 +83,7 @@ export default function PokedexPage() {
       return {
         res,
         offset
-      } 
+      }
     },
     getNextPageParam: lastPage => {
       const nextOffset = lastPage.offset + take
@@ -104,20 +106,43 @@ export default function PokedexPage() {
 
   const allPokemonData = allData ? processPokemon(allData) : undefined
 
+  const [pokemonTypesFilter, setPokemonTypesFilter] = useState<string[]>([])
+
+  const filteredPokemonData = allPokemonData?.filter(pokemon => {
+    if (pokemonTypesFilter.length === 0) {
+      return true
+    }
+    return pokemonTypesFilter.every(type => {
+      return pokemon.types.some(pokemonType => pokemonType.name === type)
+    })
+  })
+
   // const isAllDataLoaded = allData?.length === maxLength
 
   return (
     <div>
-      {allPokemonData && (
+      {filteredPokemonData && (
         <>
           <div className='sm:hidden'>
             <PokedexCardList
-              allPokemon={allPokemonData}
+              allPokemon={filteredPokemonData}
               infiniteQueryResult={queryResult}
             />
+            <div className='absolute bottom-8 left-0 right-0 flex items-center justify-center'>
+              <PokedexFilterBottomSheet
+                activeTypeFilter={pokemonTypesFilter}
+                setActiveTypeFilter={setPokemonTypesFilter}
+                triggerComponent={
+                  <div className='button bg-gray-950 text-white h-12 flex items-center justify-center w-[100px] rounded-full shadow font-semibold text-sm'>
+                    <HiOutlineAdjustments size={18} />
+                    <span className='ml-2'>Filter</span>
+                  </div>
+                }
+              />
+            </div>
           </div>
           <div className='hidden sm:block'>
-            <PokedexTable allPokemon={allPokemonData} />
+            <PokedexTable allPokemon={filteredPokemonData} />
             {/* {!isFetchingNextPage && !isAllDataLoaded && (
             <IntersectHelper callback={fetchNextPage} />
           )} */}
