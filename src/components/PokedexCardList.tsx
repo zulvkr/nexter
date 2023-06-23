@@ -5,25 +5,26 @@ import { useEffect, useRef } from 'react'
 
 type pokemonType = AllPokemonQueryQuery['getAllPokemon'][0]
 
-function PokedexCard({ pokemon }: { pokemon: pokemonType }) {
+export function PokedexCard({ pokemon }: { pokemon: pokemonType }) {
   return (
     <div className='flex flex-row w-full gap-4 px-4 py-4 bg-white border border-gray-200 rounded-md shadow-sm'>
       <div className='flex-auto'>
         <div className='flex justify-between'>
           <div>
-            <div className='font-medium text-gray-900 capitalize'>
+            <h2 className='font-medium text-gray-900 capitalize'>
               {pokemon.species.replace(/-/g, ' ')}
-            </div>
-            <div className='flex gap-1 mt-1'>
+            </h2>
+            <ul className='flex gap-1 mt-1'>
               {pokemon.types.map(type => (
-                <div
+                <li
+                  title={type.name}
                   key={type.name}
                   className='text-xs text-gray-500 capitalize w-15 border px-2 py-1 rounded'
                 >
                   {type.name}
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
           <div className='flex'>
             <div className='w-12 h-12 object-contain flex items-center justify-center'>
@@ -36,21 +37,39 @@ function PokedexCard({ pokemon }: { pokemon: pokemonType }) {
           </div>
         </div>
 
-        <div className='flex-auto grid grid-cols-[minmax(90px,1fr),minmax(50px,1fr)] text-sm text-gray-600 divide-y border-gray-50 [&>div]:py-1 mt-4'>
-          <div>Base Stats Total</div>
-          <div className='text-right border-none'>{pokemon.baseStatsTotal}</div>
-          <div>HP</div>
-          <div className='text-right'>{pokemon.baseStats.hp}</div>
-          <div>Attack</div>
-          <div className='text-right'>{pokemon.baseStats.attack}</div>
-          <div>Defense</div>
-          <div className='text-right'>{pokemon.baseStats.defense}</div>
-          <div>Sp. Att</div>
-          <div className='text-right'>{pokemon.baseStats.specialattack}</div>
-          <div>Sp. Def</div>
-          <div className='text-right'>{pokemon.baseStats.specialdefense}</div>
-          <div>Speed</div>
-          <div className='text-right'>{pokemon.baseStats.speed}</div>
+        <div
+          role='table'
+          aria-label='Pokemon Base Stats'
+          className='flex-auto grid grid-cols-[minmax(90px,1fr),minmax(50px,1fr)] text-sm text-gray-600 divide-y border-gray-50 [&>div]:py-1 mt-4'
+        >
+          <div role='rowheader'>Total</div>
+          <div role='cell' className='text-right border-none'>
+            {pokemon.baseStatsTotal}
+          </div>
+          <div role='rowheader'>HP</div>
+          <div role='cell' className='text-right'>
+            {pokemon.baseStats.hp}
+          </div>
+          <div role='rowheader'>Attack</div>
+          <div role='cell' className='text-right'>
+            {pokemon.baseStats.attack}
+          </div>
+          <div role='rowheader'>Defense</div>
+          <div role='cell' className='text-right'>
+            {pokemon.baseStats.defense}
+          </div>
+          <div role='rowheader'>Sp. Att</div>
+          <div role='cell' className='text-right'>
+            {pokemon.baseStats.specialattack}
+          </div>
+          <div role='rowheader'>Sp. Def</div>
+          <div role='cell' className='text-right'>
+            {pokemon.baseStats.specialdefense}
+          </div>
+          <div role='rowheader'>Speed</div>
+          <div role='cell' className='text-right'>
+            {pokemon.baseStats.speed}
+          </div>
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ export default function PokedexFilterBar({
       Filters
       <div>
         <Popover>
-          <PopoverTrigger>
+          <PopoverTrigger asChild>
             <Button variant={'default'}>Type</Button>
           </PopoverTrigger>
           <PopoverContent>
