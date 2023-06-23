@@ -1,30 +1,28 @@
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
-import { pokemonTypes } from '@/lib/pokemonAttributes'
-import { Button } from '@/components/ui/button'
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover'
 
-export default function PokedexFilterBottomSheet({
-  triggerComponent,
+import { Button } from '@/components/ui/button'
+import { pokemonTypes } from '@/lib/pokemonAttributes'
+
+export default function PokedexFilterBar({
   activeTypeFilter,
   setActiveTypeFilter
 }: {
-  triggerComponent: React.ReactNode
   activeTypeFilter: string[]
   setActiveTypeFilter: React.Dispatch<React.SetStateAction<string[]>>
 }) {
   return (
-    <Dialog>
-      <DialogTrigger>{triggerComponent}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Filter</DialogTitle>
-          <DialogDescription asChild>
+    <div>
+      Filters
+      <div>
+        <Popover>
+          <PopoverTrigger>
+            <Button variant={'default'}>Type</Button>
+          </PopoverTrigger>
+          <PopoverContent>
             <div>
               <div className='space-y-2'>
                 {pokemonTypes.map(type => (
@@ -48,9 +46,9 @@ export default function PokedexFilterBottomSheet({
                 ))}
               </div>
             </div>
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </div>
   )
 }

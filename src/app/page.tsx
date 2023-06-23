@@ -10,6 +10,7 @@ import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
 import { useEffect, useState } from 'react'
 import { HiOutlineAdjustments } from 'react-icons/hi'
 import PokedexFilterBottomSheet from '@/components/PokedexFilterBottomSheet'
+import PokedexFilterBar from '@/components/PokedexFilterBar'
 
 const allPokemon = graphql(/* GraphQL */ `
   query allPokemonQuery($offset: Int, $take: Int) {
@@ -100,7 +101,7 @@ export default function PokedexPage() {
     }
   })
 
-  const { data } = queryResult
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = queryResult
 
   const allData = data?.pages.flatMap(x => x?.res.getAllPokemon)
 
@@ -142,10 +143,16 @@ export default function PokedexPage() {
             </div>
           </div>
           <div className='hidden sm:block'>
+            <div>
+              <PokedexFilterBar
+                activeTypeFilter={pokemonTypesFilter}
+                setActiveTypeFilter={setPokemonTypesFilter}
+              />
+            </div>
             <PokedexTable allPokemon={filteredPokemonData} />
-            {/* {!isFetchingNextPage && !isAllDataLoaded && (
+            {!isFetchingNextPage && hasNextPage && (
             <IntersectHelper callback={fetchNextPage} />
-          )} */}
+          )}
           </div>
         </>
       )}

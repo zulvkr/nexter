@@ -19,10 +19,16 @@ export default function PokedexTable({ allPokemon }: PokedexTableProps) {
       <TableCaption>List of All Pokemon.</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className='w-[100px]'>Number</TableHead>
+          <TableHead className=''>Number</TableHead>
           <TableHead>Image</TableHead>
           <TableHead>Name</TableHead>
-          <TableHead className='text-right'>Total</TableHead>
+          <TableHead className='text-right'>Total Base Stats</TableHead>
+          <TableHead className='text-right'>HP</TableHead>
+          <TableHead className='text-right'>Attack</TableHead>
+          <TableHead className='text-right'>Defense</TableHead>
+          <TableHead className='text-right'>Sp. Att</TableHead>
+          <TableHead className='text-right'>Sp. Def</TableHead>
+          <TableHead className='text-right'>Speed</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -38,8 +44,14 @@ export default function PokedexTable({ allPokemon }: PokedexTableProps) {
                 />
               </div>
             </TableCell>
-            <TableCell>{pokemon.species.replace(/-/g, ' ')}</TableCell>
+            <TableCell className='font-medium text-gray-900 capitalize'>{pokemon.species.replace(/-/g, ' ')}</TableCell>
             <TableCell className='text-right'>{pokemon.baseStatsTotal}</TableCell>
+            <TableCell className='text-right'>{pokemon.baseStats.hp}</TableCell>
+            <TableCell className='text-right'>{pokemon.baseStats.attack}</TableCell>
+            <TableCell className='text-right'>{pokemon.baseStats.defense}</TableCell>
+            <TableCell className='text-right'>{pokemon.baseStats.specialattack}</TableCell>
+            <TableCell className='text-right'>{pokemon.baseStats.specialdefense}</TableCell>
+            <TableCell className='text-right'>{pokemon.baseStats.speed}</TableCell>
           </TableRow>
         ))}
       </TableBody>
