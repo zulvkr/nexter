@@ -6,9 +6,7 @@ This is a simple pokedex browser that allows you to search for pokemon and view 
 
 ## Deployment
 
-Deployed on node.js server in http://nodejs.f8fbipzggp6ji6q3.protbk.com/ to fit with the requirement. Deployment is containerized, performed using CapRover Selfhosted PAAS.
-
-Also deployed on vercel https://nexter-nine-kappa.vercel.app/
+Deployed on vercel https://nexter-nine-kappa.vercel.app/
 
 ## Stack
 
